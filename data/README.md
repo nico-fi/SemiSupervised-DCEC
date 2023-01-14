@@ -1,8 +1,6 @@
 ---
 annotations_creators:
 - expert-generated
-language_creators:
-- found
 language:
 - en
 license:
@@ -11,8 +9,6 @@ multilinguality:
 - monolingual
 size_categories:
 - 10K<n<100K
-source_datasets:
-- original
 task_categories:
 - image-classification
 task_ids:
@@ -29,8 +25,6 @@ pretty_name: FashionMNIST
   - [Supported Tasks](#supported-tasks)
 - [Dataset Structure](#dataset-structure)
   - [Data Instances](#data-instances)
-  - [Data Fields](#data-fields)
-  - [Data Splits](#data-splits)
 - [Dataset Creation](#dataset-creation)
   - [Curation Rationale](#curation-rationale)
   - [Source Data](#source-data)
@@ -45,13 +39,12 @@ pretty_name: FashionMNIST
 
 ## Dataset Description
 
-- **Homepage:** [GitHub](https://github.com/zalandoresearch/fashion-mnist)
 - **Repository:** [GitHub](https://github.com/zalandoresearch/fashion-mnist)
 - **Paper:** [arXiv](https://arxiv.org/pdf/1708.07747.pdf)
 
 ### Dataset Summary
 
-Fashion-MNIST is a dataset of Zalando's article images—consisting of a training set of 60,000 examples and a test set of 10,000 examples. Each example is a 28x28 grayscale image, associated with a label from 10 classes. Fashion-MNIST serves as a direct drop-in replacement for the original MNIST dataset for benchmarking machine learning algorithms. It shares the same image size and structure of training and testing splits.
+Fashion-MNIST is a dataset of Zalando's article images, consisting of 70,000 examples. Each example is a 28x28 grayscale image, associated with a label from 10 classes. Fashion-MNIST serves as a direct drop-in replacement for the original MNIST dataset for benchmarking machine learning algorithms.
 
 ### Supported Tasks
 
@@ -61,23 +54,8 @@ Fashion-MNIST is a dataset of Zalando's article images—consisting of a trainin
 
 ### Data Instances
 
-A data point comprises an image and its label.
+Each image has PNG format and is identified by a numerical index and a label. Labels are integers between 0 and 9 representing the classes with the following mapping:
 
-```
-{
-  'image': <PIL.PngImagePlugin.PngImageFile image mode=L size=28x28 at 0x27601169DD8>,
-  'label': 9
-}
-```
-
-Here's an example of how the data looks (each class takes three-rows):
-
-![](fashion-mnist-sprite.png)
-
-### Data Fields
-
-- `image`: A `PIL.Image.Image` object containing the 28x28 image. Note that when accessing the image column: `dataset[0]["image"]` the image file is automatically decoded. Decoding of a large number of image files might take a significant amount of time. Thus it is important to first query the sample index before the `"image"` column, *i.e.* `dataset[0]["image"]` should **always** be preferred over `dataset["image"][0]`.
-- `label`: an integer between 0 and 9 representing the classes with the following mapping:
   | Label | Description |
   | --- | --- |
   | 0 | T-shirt/top |
@@ -91,9 +69,9 @@ Here's an example of how the data looks (each class takes three-rows):
   | 8 | Bag |
   | 9 | Ankle boot |
 
-### Data Splits
+Here's an example of how the data looks (each class takes three-rows):
 
-The data is split into training and test set. The training set contains 60,000 images and the test set 10,000 images.
+![](../reports/figures/fashion-mnist-sprite.png)
 
 ## Dataset Creation
 
@@ -167,4 +145,4 @@ MIT Licence
 
 ### Contributions
 
-Dataset Card adapted from https://huggingface.co/datasets/fashion_mnist.
+Dataset Card adapted from [Hugging Face](https://huggingface.co/datasets/fashion_mnist).
