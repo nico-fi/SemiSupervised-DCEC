@@ -25,7 +25,7 @@ for image_path in glob.glob("data/raw/fashion_mnist/*.png"):
      y.append(int(image_path.split('/')[-1].split('_')[1].split('.')[0]))
 
 # Convert to numpy array
-X = np.array(X)
+X = np.expand_dims(X, axis=-1)
 y = np.array(y)
 
 # Normalize pixel values to be between 0 and 1
@@ -40,15 +40,11 @@ with open(params_path, "r") as params_file:
         print(exc)
 
 # Split supervised data from unsupervised data
+i_train, i_test = train_test_split(range(len(X)), train_size=params["supervision"], random_state=params["random_state"], stratify=y)
 y_train = np.full(len(X), -1, dtype=int)
-if params["supervision"] > 0:
-    i_train, i_test = train_test_split(range(len(X)), train_size=params["supervision"], random_state=params["random_state"], stratify=y)
-    y_train[i_train] = y[i_train]
-    X_test = X[i_test]
-    y_test = y[i_test]
-else:
-    X_test = X
-    y_test = y
+y_train[i_train] = y[i_train]
+X_test = X[i_test]
+y_test = y[i_test]
 
 # Path of the output data folder
 Path("data/processed").mkdir(exist_ok=True)
