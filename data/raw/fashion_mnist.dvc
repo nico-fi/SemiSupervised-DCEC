@@ -1,0 +1,5 @@
+outs:
+- md5: 7542dae24058b7d9ed6a8505a0aa5a0a.dir
+  size: 574
+  nfiles: 1
+  path: fashion_mnist
