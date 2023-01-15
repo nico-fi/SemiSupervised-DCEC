@@ -1,6 +1,5 @@
 """
-Runs data processing scripts to turn raw data from (../raw) into
-cleaned data ready to be analyzed (saved in ../processed).
+This script turns raw data into cleaned data ready to be analyzed.
 """
 
 import yaml
