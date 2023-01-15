@@ -1,0 +1,6 @@
+prepare:
+  supervision: 0.05
+  random_state: 0
+train:
+  algorithm: "RandomForestRegressor"
+  random_state: 0

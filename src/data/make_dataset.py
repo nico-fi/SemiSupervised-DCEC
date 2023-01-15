@@ -1,30 +1,61 @@
-# -*- coding: utf-8 -*-
-import click
-import logging
+"""
+Runs data processing scripts to turn raw data from (../raw) into
+cleaned data ready to be analyzed (saved in ../processed).
+"""
+
+import yaml
+import glob
+import numpy as np
 from pathlib import Path
-from dotenv import find_dotenv, load_dotenv
+from PIL import Image
+from sklearn.model_selection import train_test_split
 
 
-@click.command()
-@click.argument('input_filepath', type=click.Path(exists=True))
-@click.argument('output_filepath', type=click.Path())
-def main(input_filepath, output_filepath):
-    """ Runs data processing scripts to turn raw data from (../raw) into
-        cleaned data ready to be analyzed (saved in ../processed).
-    """
-    logger = logging.getLogger(__name__)
-    logger.info('making final data set from raw data')
+# Path of the parameters file
+params_path = Path("params.yaml")
 
+# Path of the input data folder
+input_folder_path = Path("data/raw/fashion_mnist")
 
-if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    logging.basicConfig(level=logging.INFO, format=log_fmt)
+# Read images and labels
+X, y = [], []
+for image_path in glob.glob("data/raw/fashion_mnist/*.png"):
+     image = Image.open(image_path)
+     X.append(np.array(image))
+     y.append(int(image_path.split('/')[-1].split('_')[1].split('.')[0]))
 
-    # not used in this stub but often useful for finding various files
-    project_dir = Path(__file__).resolve().parents[2]
+# Convert to numpy array
+X = np.array(X)
+y = np.array(y)
 
-    # find .env automagically by walking up directories until it's found, then
-    # load up the .env entries as environment variables
-    load_dotenv(find_dotenv())
+# Normalize pixel values to be between 0 and 1
+X = X / 255.0
 
-    main()
+# Read data preparation parameters
+with open(params_path, "r") as params_file:
+    try:
+        params = yaml.safe_load(params_file)
+        params = params["prepare"]
+    except yaml.YAMLError as exc:
+        print(exc)
+
+# Split supervised data from unsupervised data
+y_train = np.full(len(X), -1, dtype=int)
+if params["supervision"] > 0:
+    i_train, i_test = train_test_split(range(len(X)), train_size=params["supervision"], random_state=params["random_state"], stratify=y)
+    y_train[i_train] = y[i_train]
+    X_test = X[i_test]
+    y_test = y[i_test]
+else:
+    X_test = X
+    y_test = y
+
+# Path of the output data folder
+Path("data/processed").mkdir(exist_ok=True)
+prepared_folder_path = Path("data/processed")
+
+# Save data
+np.save(prepared_folder_path / "X.npy", X)
+np.save(prepared_folder_path / "y_train.npy", y_train)
+np.save(prepared_folder_path / "X_test.npy", X_test)
+np.save(prepared_folder_path / "y_test.npy", y_test)
