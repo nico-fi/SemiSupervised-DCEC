@@ -3,9 +3,9 @@ This script evaluates the model on the test data.
 The metric used for the evaluation is the accuracy.
 """
 
-import pickle
 import numpy as np
 from pathlib import Path
+from keras.models import load_model
 from sklearn.metrics import accuracy_score
 
 
@@ -20,12 +20,11 @@ X_test = np.load(input_folder_path / "X_test.npy")
 y_test = np.load(input_folder_path / "y_test.npy")
 
 # Load the model
-with open(model_folder_path / "model.pkl", "rb") as pickled_model:
-    model = pickle.load(pickled_model)
+model = load_model(model_folder_path / "model.tf")
 
 # Compute predictions using the model
 predictions = model.predict(X_test)
 
 # Compute the accuracy value for the model
-accuracy = accuracy_score(y_test, predictions)
+accuracy = accuracy_score(y_test, predictions.argmax(axis=1))
 print(f"Accuracy: {accuracy}")

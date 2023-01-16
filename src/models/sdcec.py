@@ -92,7 +92,6 @@ class SDCEC:
             end = start + batch_size
             loss = self.model.train_on_batch(x=X[start:end], y=[p[start:end], X[start:end]])
             start = end if end < len(X) else 0
-    
-    def predict(self, X):
-        q = self.model.predict(X, verbose=0)
-        return q.argmax(1)
+
+    def save(self, path):
+        self.model.save(path)

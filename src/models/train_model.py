@@ -1,8 +1,7 @@
 """
-This script trains the model and saves it as a pickle file.
+This script trains the model and saves it.
 """
 
-import pickle
 import yaml
 import numpy as np
 from pathlib import Path
@@ -34,8 +33,7 @@ model.compile()
 # Train the model
 model.fit(X, y_train, batch_size=params["batch_size"], epochs=params["epochs"], max_iter=params["max_iter"], tol=params["tol"])
 
-# Save the model as a pickle file
+# Save the model
 Path("models").mkdir(exist_ok=True)
 output_folder_path = Path("models")
-with open(output_folder_path / "model.pkl", "wb") as pickle_file:
-    pickle.dump(model, pickle_file)
+model.save(output_folder_path / "model.tf")

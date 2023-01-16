@@ -17,6 +17,7 @@ params_path = Path("params.yaml")
 input_folder_path = Path("data/raw/fashion_mnist")
 
 # Read images and labels
+print("Processing images...")
 X, y = [], []
 for image_path in glob.glob("data/raw/fashion_mnist/*.png"):
      image = Image.open(image_path)
