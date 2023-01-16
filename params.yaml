@@ -1,0 +1,8 @@
+prepare:
+  supervision: 0.05
+  random_state: 42
+train:
+  batch_size: 256
+  epochs: 5
+  max_iter: 3000
+  tol: 0.001

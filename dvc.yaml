@@ -1,0 +1,34 @@
+stages:
+  prepare:
+    cmd: python3 src/data/prepare_dataset.py
+    deps:
+    - data/raw/fashion_mnist
+    - src/data/prepare_dataset.py
+    params:
+    - prepare.random_state
+    - prepare.supervision
+    outs:
+    - data/processed/X.npy
+    - data/processed/X_test.npy
+    - data/processed/y_test.npy
+    - data/processed/y_train.npy
+  train:
+    cmd: python3 src/models/train_model.py
+    deps:
+    - data/processed/X.npy
+    - data/processed/y_train.npy
+    - src/models/train_model.py
+    params:
+    - train.batch_size
+    - train.epochs
+    - train.max_iter
+    - train.tol
+    outs:
+    - models/model.tf
+  evaluate:
+    cmd: python3 src/models/evaluate_model.py
+    deps:
+    - data/processed/X_test.npy
+    - data/processed/y_test.npy
+    - models/model.tf
+    - src/models/evaluate_model.py

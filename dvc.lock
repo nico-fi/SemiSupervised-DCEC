@@ -1,0 +1,68 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python3 src/data/prepare_dataset.py
+    deps:
+    - path: data/raw/fashion_mnist
+      md5: f539bc8bff1140de9543af7be729a9ff.dir
+      size: 35407815
+      nfiles: 70001
+    - path: src/data/prepare_dataset.py
+      md5: d5bf559d2c9f5bad949f2081077d0a9f
+      size: 1931
+    params:
+      params.yaml:
+        prepare.random_state: 42
+        prepare.supervision: 0.05
+    outs:
+    - path: data/processed/X.npy
+      md5: bef9c76d6ad4ac9c35cdafe145e37f6b
+      size: 439040128
+    - path: data/processed/X_test.npy
+      md5: fe213818645797581e510047ad40ddbb
+      size: 417088128
+    - path: data/processed/y_test.npy
+      md5: 9f36132b1118750624d474fed1ee6f3b
+      size: 532128
+    - path: data/processed/y_train.npy
+      md5: f55403e9c15c336a803eb576915f55e8
+      size: 560128
+  train:
+    cmd: python3 src/models/train_model.py
+    deps:
+    - path: data/processed/X.npy
+      md5: bef9c76d6ad4ac9c35cdafe145e37f6b
+      size: 439040128
+    - path: data/processed/y_train.npy
+      md5: f55403e9c15c336a803eb576915f55e8
+      size: 560128
+    - path: src/models/train_model.py
+      md5: 353e68b1fc150ec73fb7c0d5ee6d2e6a
+      size: 1470
+    params:
+      params.yaml:
+        train.batch_size: 256
+        train.epochs: 5
+        train.max_iter: 3000
+        train.tol: 0.001
+    outs:
+    - path: models/model.tf
+      md5: 1adb6c7b4347e2a408ee8955580d24a3.dir
+      size: 1823702
+      nfiles: 5
+  evaluate:
+    cmd: python3 src/models/evaluate_model.py
+    deps:
+    - path: data/processed/X_test.npy
+      md5: fe213818645797581e510047ad40ddbb
+      size: 417088128
+    - path: data/processed/y_test.npy
+      md5: 9f36132b1118750624d474fed1ee6f3b
+      size: 532128
+    - path: models/model.tf
+      md5: 1adb6c7b4347e2a408ee8955580d24a3.dir
+      size: 1823702
+      nfiles: 5
+    - path: src/models/evaluate_model.py
+      md5: be1cdbc4d0d6bf9a80492ab694b67b8c
+      size: 1023
