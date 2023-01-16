@@ -8,8 +8,9 @@ import numpy as np
 from pathlib import Path
 from sdcec import SDCEC
 
+
 mlflow.set_tracking_uri("https://dagshub.com/nico-fi/SemiSupervised-DCEC.mlflow")
-mlflow.set_experiment("Train")
+mlflow.set_experiment("Train Model")
 mlflow.start_run()
 
 # Path of the parameters file

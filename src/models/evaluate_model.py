@@ -11,7 +11,7 @@ from sklearn.metrics import accuracy_score
 
 
 mlflow.set_tracking_uri("https://dagshub.com/nico-fi/SemiSupervised-DCEC.mlflow")
-mlflow.set_experiment("Evaluate")
+mlflow.set_experiment("Evaluate Model")
 mlflow.start_run()
 
 # Path to the prepared data folder

@@ -12,7 +12,7 @@ from sklearn.model_selection import train_test_split
 
 
 mlflow.set_tracking_uri("https://dagshub.com/nico-fi/SemiSupervised-DCEC.mlflow")
-mlflow.set_experiment("Prepare")
+mlflow.set_experiment("Prepare Data")
 mlflow.start_run()
 
 # Path of the parameters file
