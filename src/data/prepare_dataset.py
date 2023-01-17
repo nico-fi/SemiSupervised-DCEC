@@ -2,14 +2,13 @@
 This script turns raw data into cleaned data ready to be analyzed.
 """
 
-import yaml
-import glob
-import mlflow
-import numpy as np
 from pathlib import Path
+import glob
+import numpy as np
 from PIL import Image
 from sklearn.model_selection import train_test_split
-
+import yaml
+import mlflow
 
 mlflow.set_tracking_uri("https://dagshub.com/nico-fi/SemiSupervised-DCEC.mlflow")
 mlflow.set_experiment("Prepare Data")
@@ -25,9 +24,9 @@ input_folder_path = Path("data/raw/fashion_mnist")
 print("Processing images...")
 X, y = [], []
 for image_path in glob.glob("data/raw/fashion_mnist/*.png"):
-     image = Image.open(image_path)
-     X.append(np.array(image))
-     y.append(int(image_path.split('/')[-1].split('_')[1].split('.')[0]))
+    image = Image.open(image_path)
+    X.append(np.array(image))
+    y.append(int(image_path.split('/')[-1].split('_')[1].split('.')[0]))
 
 # Convert to numpy array
 X = np.expand_dims(X, axis=-1)
@@ -37,7 +36,7 @@ y = np.array(y)
 X = X / 255.0
 
 # Read data preparation parameters
-with open(params_path, "r") as params_file:
+with open(params_path, "r", encoding="utf-8") as params_file:
     try:
         params = yaml.safe_load(params_file)
         params = params["prepare"]
@@ -49,7 +48,12 @@ mlflow.log_param("random_state", params["random_state"])
 mlflow.log_param("supervision", params["supervision"])
 
 # Split supervised data from unsupervised data
-i_train, i_test = train_test_split(range(len(X)), train_size=params["supervision"], random_state=params["random_state"], stratify=y)
+i_train, i_test = train_test_split(
+    range(len(X)),
+    train_size=params["supervision"],
+    random_state=params["random_state"],
+    stratify=y
+)
 y_train = np.full(len(X), -1, dtype=int)
 y_train[i_train] = y[i_train]
 X_test = X[i_test]

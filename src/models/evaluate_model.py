@@ -3,11 +3,12 @@ This script evaluates the model on the test data.
 The metric used for the evaluation is the accuracy.
 """
 
-import mlflow
-import numpy as np
 from pathlib import Path
+import numpy as np
 from keras.models import load_model
 from sklearn.metrics import accuracy_score
+import mlflow
+
 
 
 mlflow.set_tracking_uri("https://dagshub.com/nico-fi/SemiSupervised-DCEC.mlflow")

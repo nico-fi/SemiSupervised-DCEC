@@ -13,7 +13,7 @@ stages:
     - data/processed/y_test.npy
     - data/processed/y_train.npy
   train:
-    cmd: python3 src/models/train_model.py
+    cmd: PYTHONHASHSEED=0 python3 src/models/train_model.py
     deps:
     - data/processed/X.npy
     - data/processed/y_train.npy

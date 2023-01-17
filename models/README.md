@@ -24,7 +24,7 @@ metrics: accuracy
 
 ## Model Details
 
-An ML model for performing image classification using a small amount of supervision. It was developed by Nicola Fiorentino in September 2022, starting from the previous work _Deep clustering with convolutional autoencoders_ of Xifeng Guo, Xinwang Liu, En Zhu and Jianping Yin. A complete description of the model is provided in the following [paper](../reports/paper.pdf).
+An ML model for performing image classification using a small amount of supervision. It was developed by Nicola Fiorentino in September 2022, starting from the previous work _Deep clustering with convolutional autoencoders_ of Xifeng Guo, Xinwang Liu, En Zhu and Jianping Yin. A complete description of the model is provided in the following [paper](../references/paper.pdf).
 
 ### Motivations
 
