@@ -55,6 +55,6 @@ model_file_path = output_folder_path / "model.tf"
 model.save(model_file_path)
 
 # Log the model
-mlflow.log_artifacts(model_file_path)
+mlflow.log_artifact(model_file_path)
 
 mlflow.end_run()
