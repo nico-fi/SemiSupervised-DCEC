@@ -11,11 +11,7 @@ from keras.models import Model, Sequential
 from keras.layers import Layer, InputSpec, Conv2D, Conv2DTranspose, Dense, Flatten, Reshape
 from keras.utils import to_categorical
 
-mlflow.set_tracking_uri("https://dagshub.com/nico-fi/SemiSupervised-DCEC.mlflow")
-mlflow.set_experiment("Train Model")
-mlflow.start_run()
 
-# Define the model architecture
 class ClusteringLayer(Layer):
     """
     Converts input sample to soft label, i.e. a vector representing the probability of the
@@ -112,14 +108,11 @@ class SDCEC:
                 p_dist = (p_dist.T / p_dist.sum(1)).T
                 p_dist[known_instances] = p_fixed
                 predictions = q_dist.argmax(1)
-                if ite > 0:
-                    delta = np.sum(predictions != last_predictions) / predictions.shape[0]
-                    if delta < tol:
-                        print('Reached tolerance threshold')
-                        break
-                    print(f'Iter {ite}')
+                if ite > 0 and np.sum(predictions != last_predictions) / predictions.shape[0] < tol:
+                    print('Reached tolerance threshold')
+                    break
+                print(f'Iter {ite}')
                 last_predictions = np.copy(predictions)
-
             end = start + batch_size
             self.model.train_on_batch(x_data[start:end], [p_dist[start:end], x_data[start:end]])
             start = end if end < len(x_data) else 0
@@ -133,54 +126,53 @@ class SDCEC:
         self.model.save(path)
 
 
-# Path of the parameters file
-params_path = Path("params.yaml")
+def main():
+    """
+    Trains the model.
+    """
+    mlflow.set_tracking_uri("https://dagshub.com/nico-fi/SemiSupervised-DCEC.mlflow")
+    mlflow.set_experiment("Train Model")
+    mlflow.start_run()
 
-# Path of the prepared data folder
-input_folder_path = Path("data/processed")
+    params_path = Path("params.yaml")
+    input_folder_path = Path("data/processed")
+    output_folder_path = Path("models")
 
-# Read training dataset
-X = np.load(input_folder_path / "X.npy")
-y_train = np.load(input_folder_path / "y_train.npy")
+    # Read training data
+    x_data = np.load(input_folder_path / "x.npy")
+    y_train = np.load(input_folder_path / "y_train.npy")
 
-# Read training parameters
-with open(params_path, "r", encoding="utf-8") as params_file:
-    try:
-        params = yaml.safe_load(params_file)
-        params = params["train"]
-    except yaml.YAMLError as exc:
-        print(exc)
+    # Load and log training parameters
+    with open(params_path, "r", encoding="utf-8") as params_file:
+        params = yaml.safe_load(params_file)["train"]
+    mlflow.log_params(
+        {
+            "batch_size": params["batch_size"],
+            "epochs": params["epochs"],
+            "max_iter": params["max_iter"],
+            "tol": params["tol"],
+        }
+    )
 
-# Log parameters
-mlflow.log_params(
-    {
-        "batch_size": params["batch_size"],
-        "epochs": params["epochs"],
-        "max_iter": params["max_iter"],
-        "tol": params["tol"],
-    }
-)
+    # Train the model
+    model = SDCEC(input_shape=x_data.shape[1:], n_clusters=len(np.unique(y_train)) - 1)
+    model.fit(
+        x_data,
+        y_train,
+        batch_size=params["batch_size"],
+        epochs=params["epochs"],
+        max_iter=params["max_iter"],
+        tol=params["tol"]
+    )
 
-# Instantiate the model
-model = SDCEC(input_shape=X.shape[1:], n_clusters=len(np.unique(y_train)) - 1)
+    # Save and log the model
+    output_folder_path.mkdir(exist_ok=True)
+    model_file_path = output_folder_path / "model.tf"
+    model.save(model_file_path)
+    mlflow.log_artifact(model_file_path)
 
-# Train the model
-model.fit(
-    X,
-    y_train,
-    batch_size=params["batch_size"],
-    epochs=params["epochs"],
-    max_iter=params["max_iter"],
-    tol=params["tol"]
-)
+    mlflow.end_run()
 
-# Save the model
-Path("models").mkdir(exist_ok=True)
-output_folder_path = Path("models")
-model_file_path = output_folder_path / "model.tf"
-model.save(model_file_path)
 
-# Log the model
-mlflow.log_artifact(model_file_path)
-
-mlflow.end_run()
+if __name__ == "__main__":
+    main()

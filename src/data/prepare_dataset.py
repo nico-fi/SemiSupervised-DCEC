@@ -10,63 +10,60 @@ from sklearn.model_selection import train_test_split
 import yaml
 import mlflow
 
-mlflow.set_tracking_uri("https://dagshub.com/nico-fi/SemiSupervised-DCEC.mlflow")
-mlflow.set_experiment("Prepare Data")
-mlflow.start_run()
 
-# Path of the parameters file
-params_path = Path("params.yaml")
+def main():
+    """
+    Turns raw data into cleaned data.
+    """
+    mlflow.set_tracking_uri("https://dagshub.com/nico-fi/SemiSupervised-DCEC.mlflow")
+    mlflow.set_experiment("Prepare Data")
+    mlflow.start_run()
 
-# Path of the input data folder
-input_folder_path = Path("data/raw/fashion_mnist")
+    params_path = Path("params.yaml")
+    input_folder_path = Path("data/raw/fashion_mnist")
+    prepared_folder_path = Path("data/processed")
 
-# Read images and labels
-print("Processing images...")
-X, y = [], []
-for image_path in glob.glob("data/raw/fashion_mnist/*.png"):
-    image = Image.open(image_path)
-    X.append(np.array(image))
-    y.append(int(image_path.split('/')[-1].split('_')[1].split('.')[0]))
+    # Read images and labels
+    print("Processing images...")
+    x_data, y_data = [], []
+    for image_path in glob.glob(str(input_folder_path / "*.png")):
+        x_data.append(np.array(Image.open(image_path)))
+        y_data.append(int(image_path.split('/')[-1].split('_')[1].split('.')[0]))
 
-# Convert to numpy array
-X = np.expand_dims(X, axis=-1)
-y = np.array(y)
+    # Convert to numpy array and normalize pixel values to be between 0 and 1
+    x_data = np.expand_dims(x_data, axis=-1) / 255.0
+    y_data = np.array(y_data)
 
-# Normalize pixel values to be between 0 and 1
-X = X / 255.0
+    # Load and log data preparation parameters
+    with open(params_path, "r", encoding="utf-8") as params_file:
+        params = yaml.safe_load(params_file)["prepare"]
+    mlflow.log_params(
+        {
+        "supervision": params["supervision"],
+        "random_state": params["random_state"]
+        }
+    )
 
-# Read data preparation parameters
-with open(params_path, "r", encoding="utf-8") as params_file:
-    try:
-        params = yaml.safe_load(params_file)
-        params = params["prepare"]
-    except yaml.YAMLError as exc:
-        print(exc)
+    # Split data into supervised and unsupervised
+    i_train, i_test = train_test_split(
+        range(len(x_data)),
+        train_size=params["supervision"],
+        random_state=params["random_state"],
+        stratify=y_data)
+    y_train = np.full(len(x_data), -1, dtype=int)
+    y_train[i_train] = y_data[i_train]
+    x_test = x_data[i_test]
+    y_test = y_data[i_test]
 
-# Log parameters
-mlflow.log_param("random_state", params["random_state"])
-mlflow.log_param("supervision", params["supervision"])
+    # Save data
+    prepared_folder_path.mkdir(exist_ok=True)
+    np.save(prepared_folder_path / "x.npy", x_data)
+    np.save(prepared_folder_path / "y_train.npy", y_train)
+    np.save(prepared_folder_path / "x_test.npy", x_test)
+    np.save(prepared_folder_path / "y_test.npy", y_test)
 
-# Split supervised data from unsupervised data
-i_train, i_test = train_test_split(
-    range(len(X)),
-    train_size=params["supervision"],
-    random_state=params["random_state"],
-    stratify=y
-)
-y_train = np.full(len(X), -1, dtype=int)
-y_train[i_train] = y[i_train]
-X_test = X[i_test]
-y_test = y[i_test]
+    mlflow.end_run()
 
-# Path of the output data folder
-Path("data/processed").mkdir(exist_ok=True)
-prepared_folder_path = Path("data/processed")
 
-# Save data
-np.save(prepared_folder_path / "X.npy", X)
-np.save(prepared_folder_path / "y_train.npy", y_train)
-np.save(prepared_folder_path / "X_test.npy", X_test)
-np.save(prepared_folder_path / "y_test.npy", y_test)
-
-mlflow.end_run()
+if __name__ == "__main__":
+    main()
