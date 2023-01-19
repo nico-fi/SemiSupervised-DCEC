@@ -5,6 +5,7 @@ Tests for the data preparation script.
 from pathlib import Path
 import numpy as np
 import yaml
+import pytest
 from ..data import prepare_dataset
 
 
@@ -36,7 +37,12 @@ def test_prepare_dataset():
     y_test = np.load(prepared_folder_path / "y_test.npy")
     assert len(x_data) == len(y_train)
     assert len(x_test) == len(y_test)
+    assert len(x_test) < len(x_data)
     assert ((x_data >= 0) & (x_data <= 1)).all()
     assert ((x_test >= 0) & (x_test <= 1)).all()
     assert (y_train >= -1).all()
     assert (y_test >= 0).all()
+    for class_id in np.unique(y_test):
+        train_percentage = np.count_nonzero(y_train == class_id) / np.count_nonzero(y_train != -1)
+        test_percentage = np.count_nonzero(y_test == class_id) / len(y_test)
+        assert train_percentage == pytest.approx(test_percentage, abs=0.1)
