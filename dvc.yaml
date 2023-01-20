@@ -8,14 +8,14 @@ stages:
     - prepare.random_state
     - prepare.supervision
     outs:
-    - data/processed/X.npy
-    - data/processed/X_test.npy
+    - data/processed/x.npy
+    - data/processed/x_test.npy
     - data/processed/y_test.npy
     - data/processed/y_train.npy
   train:
-    cmd: python3 src/models/train_model.py
+    cmd: PYTHONHASHSEED=0 python3 src/models/train_model.py
     deps:
-    - data/processed/X.npy
+    - data/processed/x.npy
     - data/processed/y_train.npy
     - src/models/train_model.py
     params:
@@ -28,7 +28,7 @@ stages:
   evaluate:
     cmd: python3 src/models/evaluate_model.py
     deps:
-    - data/processed/X_test.npy
+    - data/processed/x_test.npy
     - data/processed/y_test.npy
     - models/model.tf
     - src/models/evaluate_model.py
