@@ -5,7 +5,8 @@ This script turns raw data into cleaned data ready to be analyzed.
 from pathlib import Path
 import glob
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageStat
+from pandas import DataFrame
 from sklearn.model_selection import train_test_split
 import yaml
 import mlflow
@@ -13,7 +14,7 @@ import mlflow
 
 def main():
     """
-    Turns raw data into cleaned data.
+    Turns raw data into cleaned data and generates a csv file containing metadata.
     """
     mlflow.set_tracking_uri("https://dagshub.com/nico-fi/SemiSupervised-DCEC.mlflow")
     mlflow.set_experiment("Prepare Data")
@@ -22,15 +23,37 @@ def main():
     params_path = Path("params.yaml")
     input_folder_path = Path("data/raw/fashion_mnist")
     prepared_folder_path = Path("data/processed")
+    metadata_folder_path = Path("data/ge")
 
     # Read images and labels
     print("Processing images...")
     x_data, y_data = [], []
+    img_format, height, width, mean, std = [], [], [], [], []
     for image_path in glob.glob(str(input_folder_path / "*.png")):
-        x_data.append(np.array(Image.open(image_path)))
+        image = Image.open(image_path)
+        x_data.append(np.array(image))
         y_data.append(int(image_path.split('/')[-1].split('_')[1].split('.')[0]))
+        img_format.append(image.format)
+        height.append(image.height)
+        width.append(image.width)
+        stat = ImageStat.Stat(image)
+        mean.append(sum(stat.mean) / len(stat.mean))
+        std.append(sum(stat.stddev) / len(stat.stddev))
 
-    # Convert to numpy array and normalize pixel values to be between 0 and 1
+    # Create csv file containing metadata
+    dataframe = DataFrame(
+        {
+            "format": img_format,
+            "height": height,
+            "width": width,
+            "mean": mean,
+            "std": std,
+            "label": y_data
+        }
+    )
+    dataframe.to_csv(metadata_folder_path / "fashion_mnist.csv", index=False)
+
+    # Convert data to numpy array and normalize pixel values to be between 0 and 1
     x_data = np.expand_dims(x_data, axis=-1) / 255.0
     y_data = np.array(y_data)
 

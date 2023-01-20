@@ -11,6 +11,7 @@ from ..data import prepare_dataset
 
 params_path = Path("params.yaml")
 prepared_folder_path = Path("data/processed")
+metadata_folder_path = Path("data/ge")
 
 def test_preparation_parameters():
     """
@@ -27,6 +28,7 @@ def test_prepare_dataset():
     Tests that the data preparation script creates the expected files.
     """
     prepare_dataset.main()
+    assert (metadata_folder_path / "fashion_mnist.csv").is_file()
     assert (prepared_folder_path / "x.npy").is_file()
     assert (prepared_folder_path / "y_train.npy").is_file()
     assert (prepared_folder_path / "x_test.npy").is_file()
