@@ -9,6 +9,7 @@ from ..models import evaluate_model
 
 model_folder_path = Path("models")
 
+
 def test_evaluate_model():
     """
     Tests that the model evaluation script creates the expected files and

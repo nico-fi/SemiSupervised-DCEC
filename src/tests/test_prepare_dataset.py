@@ -13,6 +13,7 @@ params_path = Path("params.yaml")
 prepared_folder_path = Path("data/processed")
 metadata_folder_path = Path("data/ge")
 
+
 def test_preparation_parameters():
     """
     Tests that the parameter values are valid.
@@ -22,6 +23,7 @@ def test_preparation_parameters():
     assert isinstance(params["supervision"], float)
     assert isinstance(params["random_state"], int)
     assert 0 < params["supervision"] < 1
+
 
 def test_prepare_dataset():
     """

@@ -75,6 +75,7 @@ class SDCEC:
         self.model = Model(inputs=self.autoencoder.input, outputs=clustering)
         self.model.compile(loss=['kld', 'mse'], loss_weights=[1, 1], optimizer='adam')
 
+
     def fit(self, x_data, y_data, batch_size, epochs, max_iter, tol):
         """
         Trains the model.
@@ -116,6 +117,7 @@ class SDCEC:
             end = start + batch_size
             self.model.train_on_batch(x_data[start:end], [p_dist[start:end], x_data[start:end]])
             start = end if end < len(x_data) else 0
+
 
     def save(self, path):
         """
