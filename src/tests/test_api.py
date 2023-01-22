@@ -2,11 +2,14 @@
 Tests for the API.
 """
 
-from io import BytesIO
+from pathlib import Path
 from PIL import Image
 from fastapi.testclient import TestClient
 import pytest
 from app.api import app
+
+
+samples_folder_path = Path("src/tests/samples")
 
 
 @pytest.fixture(scope="module")
@@ -51,10 +54,8 @@ def test_predict_item(client): # pylint: disable=redefined-outer-name
     """
     Test that the API returns a valid response after a prediction request.
     """
-    stream = BytesIO()
-    Image.new('L', (28, 28)).save(stream, 'png')
-    stream.seek(0)
-    response = client.post("/model", files=(("image", stream),))
+    with open(samples_folder_path / "0.png", "rb") as image:
+        response = client.post("/model", files={"file": image})
     assert response.status_code == 200
     assert response.request.method == "POST"
     data = response.json()["data"]

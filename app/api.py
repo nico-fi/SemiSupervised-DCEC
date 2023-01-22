@@ -4,12 +4,13 @@ This module contains the FastAPI application and all of its endpoints.
 
 from datetime import datetime
 from http import HTTPStatus
+import io
 from pathlib import Path
 import json
 import yaml
 import numpy as np
 from keras.models import load_model
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI, File
 from PIL import Image, UnidentifiedImageError
 
 
@@ -89,12 +90,12 @@ def _get_metrics():
 
 
 @app.post("/model")
-def _predict(image: UploadFile):
+def _predict(file: bytes = File(...)):
     """
     Classify a data point.
     """
     try:
-        image = Image.open(image.file)
+        image = Image.open(io.BytesIO(file))
         assert image.size == (28, 28)
     except (UnidentifiedImageError, AssertionError):
         return {
