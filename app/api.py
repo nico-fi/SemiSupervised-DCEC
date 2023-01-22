@@ -5,7 +5,6 @@ This module contains the FastAPI application and all of its endpoints.
 from datetime import datetime
 from http import HTTPStatus
 from pathlib import Path
-from enum import Enum
 import json
 import yaml
 import numpy as np
@@ -14,24 +13,20 @@ from fastapi import FastAPI, UploadFile
 from PIL import Image, UnidentifiedImageError
 
 
-class ArticleType(Enum):
-    """
-    Enum class for the article types.
-    """
-    T_SHIRT = 0
-    TROUSER = 1
-    PULLOVER = 2
-    DRESS = 3
-    COAT = 4
-    SANDAL = 5
-    SHIRT = 6
-    SNEAKER = 7
-    BAG = 8
-    ANKLE_BOOT = 9
-
-
 model_folder_path = Path("models")
 artifacts = {}
+article_type = {
+    0:'T-shirt/top',
+    1:'Trouser',
+    2:'Pullover',
+    3:'Dress',
+    4:'Coat',
+    5:'Sandal',
+    6:'Shirt',
+    7:'Sneaker',
+    8:'Bag',
+    9:'Ankle boot'
+}
 
 
 app = FastAPI(
@@ -96,25 +91,28 @@ def _get_metrics():
 @app.post("/model")
 def _predict(image: UploadFile):
     """
-    Classify a new data point.
+    Classify a data point.
     """
     try:
-        image = Image.open(image.file).convert("L").resize((28, 28))
-    except UnidentifiedImageError:
+        image = Image.open(image.file)
+        assert image.size == (28, 28)
+    except (UnidentifiedImageError, AssertionError):
         return {
             "message": HTTPStatus.BAD_REQUEST.phrase,
             "status-code": HTTPStatus.BAD_REQUEST,
+            "timestamp": datetime.now().isoformat(),
             "data": {"message": "The image could not be identified. "
                                 "Please, try again with a different image."}
         }
     image = np.expand_dims(image, axis=0) / 255.0
     prediction = artifacts["model"].predict(image)
     predicted_class = prediction.argmax().item()
-    predicted_type = ArticleType(predicted_class).name
+    predicted_type = article_type[predicted_class]
     confidence = prediction.max().item()
     return {
         "message": HTTPStatus.OK.phrase,
         "status-code": HTTPStatus.OK,
+        "timestamp": datetime.now().isoformat(),
         "data": {
             "predicted_class": predicted_class,
             "predicted_type": predicted_type,
