@@ -8,8 +8,8 @@ stages:
       size: 35407815
       nfiles: 70001
     - path: src/data/prepare_dataset.py
-      md5: 1fb2ebad67c337bebc1de36f9198e2b1
-      size: 2093
+      md5: f3e1fc076f8e3dcb7f4417c974f307af
+      size: 2910
     params:
       params.yaml:
         prepare.random_state: 42
@@ -37,8 +37,8 @@ stages:
       md5: f55403e9c15c336a803eb576915f55e8
       size: 560128
     - path: src/models/train_model.py
-      md5: 8af3b7e71127821055ecc6856c88ed8c
-      size: 6771
+      md5: cb375bf0e920bd1539aa0a104019d416
+      size: 6917
     params:
       params.yaml:
         train.batch_size: 256
@@ -47,8 +47,8 @@ stages:
         train.tol: 0.001
     outs:
     - path: models/model.tf
-      md5: c9f9ab2e2c8c658c059be8d464cf71a5.dir
-      size: 1823726
+      md5: 0fafa773a5a52196bee3866694a9c90c.dir
+      size: 1823727
       nfiles: 5
   evaluate:
     cmd: python3 src/models/evaluate_model.py
@@ -60,9 +60,9 @@ stages:
       md5: 9f36132b1118750624d474fed1ee6f3b
       size: 532128
     - path: models/model.tf
-      md5: c9f9ab2e2c8c658c059be8d464cf71a5.dir
-      size: 1823726
+      md5: 0fafa773a5a52196bee3866694a9c90c.dir
+      size: 1823727
       nfiles: 5
     - path: src/models/evaluate_model.py
-      md5: 031d8edcfbf6da975bd6abf2167d0e24
-      size: 1244
+      md5: 1ee4e69c209055f10dc58c5dd82a5692
+      size: 1263
