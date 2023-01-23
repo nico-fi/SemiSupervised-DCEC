@@ -8,7 +8,7 @@ import requests
 import gradio as gr
 
 
-samples_folder_path = Path("src/tests/samples")
+samples_folder_path = Path("data/samples")
 article_type = {
     0:'T-shirt/top',
     1:'Trouser',

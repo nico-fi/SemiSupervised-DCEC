@@ -8,7 +8,7 @@ import pytest
 from app.api import app
 
 
-samples_folder_path = Path("src/tests/samples")
+samples_folder_path = Path("data/samples")
 
 
 @pytest.fixture(scope="module")

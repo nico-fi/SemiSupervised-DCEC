@@ -11,7 +11,7 @@ from keras.models import load_model
 import pytest
 
 
-samples_folder_path = Path("src/tests/samples")
+samples_folder_path = Path("data/samples")
 model_path = Path("models/model.tf")
 TEST_THRESHOLD = 0.7
 
