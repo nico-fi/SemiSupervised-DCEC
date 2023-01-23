@@ -11,9 +11,10 @@ from keras.models import load_model
 import pytest
 
 
-samples_folder_path = Path("src/tests/samples")
+samples_folder_path = Path("data/samples")
 model_path = Path("models/model.tf")
 TEST_THRESHOLD = 0.7
+
 
 @pytest.fixture(scope="module")
 def create_data():
@@ -49,8 +50,9 @@ def create_data():
     y_original = np.array(y_original)
     return x_original, x_rotated, x_noisy, y_original
 
+
 @pytest.fixture(scope="module")
-def get_predictions(create_data):
+def get_predictions(create_data): # pylint: disable=redefined-outer-name
     """
     Loads the trained model and returns the predictions for the original,
     rotated, and noisy images with their true class id.
@@ -65,7 +67,8 @@ def get_predictions(create_data):
     pred_noisy = model.predict(x_noisy).argmax(axis=1)
     return pred_original, pred_rotated, pred_noisy, y_original
 
-def test_invariance(get_predictions):
+
+def test_invariance(get_predictions): # pylint: disable=redefined-outer-name
     """
     Tests that the model is invariant to rotation and noise.
     """
@@ -76,7 +79,7 @@ def test_invariance(get_predictions):
     assert np.count_nonzero(pred_original == pred_noisy) >= len(pred_original) * TEST_THRESHOLD
 
 
-def test_directional(get_predictions):
+def test_directional(get_predictions): # pylint: disable=redefined-outer-name
     """
     Tests that the model provides different predictions for samples
     belonging to different classes.
@@ -84,7 +87,8 @@ def test_directional(get_predictions):
     pred_original = get_predictions[0]
     assert len(set(pred_original)) >= len(pred_original) * TEST_THRESHOLD
 
-def test_minimum_functionality(get_predictions):
+
+def test_minimum_functionality(get_predictions): # pylint: disable=redefined-outer-name
     """
     Tests that the model provides the correct predictions for some input samples.
     """

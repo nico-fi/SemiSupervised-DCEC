@@ -5,8 +5,8 @@ stages:
     - data/raw/fashion_mnist
     - src/data/prepare_dataset.py
     params:
-    - prepare.random_state
     - prepare.supervision
+    - prepare.random_state
     outs:
     - data/processed/x.npy
     - data/processed/x_test.npy
@@ -23,6 +23,7 @@ stages:
     - train.epochs
     - train.max_iter
     - train.tol
+    - train.random_state
     outs:
     - models/model.tf
   evaluate:

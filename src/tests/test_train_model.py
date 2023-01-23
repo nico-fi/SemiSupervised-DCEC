@@ -11,6 +11,7 @@ from ..models import train_model
 params_path = Path("params.yaml")
 model_file_path = Path("models/model.tf")
 
+
 def test_training_parameters():
     """
     Tests that the parameter values are valid.
@@ -25,6 +26,7 @@ def test_training_parameters():
     assert params["epochs"] > 3
     assert params["max_iter"] > 1000
     assert 0.0001 < params["tol"] < 1
+
 
 def test_train_model():
     """

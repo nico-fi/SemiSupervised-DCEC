@@ -3,6 +3,7 @@ This script trains the model and saves it.
 """
 
 from pathlib import Path
+import random
 import numpy as np
 import yaml
 import mlflow
@@ -10,6 +11,7 @@ import keras.backend as K
 from keras.models import Model, Sequential
 from keras.layers import Layer, InputSpec, Conv2D, Conv2DTranspose, Dense, Flatten, Reshape
 from keras.utils import to_categorical
+from tensorflow import random as tf_random
 
 
 class ClusteringLayer(Layer):
@@ -75,6 +77,7 @@ class SDCEC:
         self.model = Model(inputs=self.autoencoder.input, outputs=clustering)
         self.model.compile(loss=['kld', 'mse'], loss_weights=[1, 1], optimizer='adam')
 
+
     def fit(self, x_data, y_data, batch_size, epochs, max_iter, tol):
         """
         Trains the model.
@@ -117,6 +120,7 @@ class SDCEC:
             self.model.train_on_batch(x_data[start:end], [p_dist[start:end], x_data[start:end]])
             start = end if end < len(x_data) else 0
 
+
     def save(self, path):
         """
         Saves the model.
@@ -151,8 +155,14 @@ def main():
             "epochs": params["epochs"],
             "max_iter": params["max_iter"],
             "tol": params["tol"],
+            "random_state": params["random_state"],
         }
     )
+
+    # Set seeds
+    np.random.seed(params["random_state"])
+    random.seed(params["random_state"])
+    tf_random.set_seed(params["random_state"])
 
     # Train the model
     model = SDCEC(input_shape=x_data.shape[1:], n_clusters=len(np.unique(y_train)) - 1)
@@ -174,5 +184,5 @@ def main():
     mlflow.end_run()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__": # pragma: no cover
     main()
