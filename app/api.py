@@ -16,20 +16,6 @@ from PIL import Image, UnidentifiedImageError
 
 model_folder_path = Path("models")
 artifacts = {}
-article_type = {
-    0:'T-shirt/top',
-    1:'Trouser',
-    2:'Pullover',
-    3:'Dress',
-    4:'Coat',
-    5:'Sandal',
-    6:'Shirt',
-    7:'Sneaker',
-    8:'Bag',
-    9:'Ankle boot'
-}
-
-
 app = FastAPI(
     title="Fashion MNIST Classifier",
     description="This API lets you make predictions on the Fashion MNIST dataset using SDCEC.",
@@ -106,17 +92,10 @@ def _predict(file: bytes = File(...)):
                                 "Please, try again with a different image."}
         }
     image = np.expand_dims(image, axis=0) / 255.0
-    prediction = artifacts["model"].predict(image)
-    predicted_class = prediction.argmax().item()
-    predicted_type = article_type[predicted_class]
-    confidence = prediction.max().item()
+    prediction = artifacts["model"].predict(image)[0]
     return {
         "message": HTTPStatus.OK.phrase,
         "status-code": HTTPStatus.OK,
         "timestamp": datetime.now().isoformat(),
-        "data": {
-            "predicted_class": predicted_class,
-            "predicted_type": predicted_type,
-            "confidence": confidence,
-        }
+        "data": {"prediction": prediction.tolist()}
     }

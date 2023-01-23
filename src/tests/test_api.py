@@ -3,7 +3,6 @@ Tests for the API.
 """
 
 from pathlib import Path
-from PIL import Image
 from fastapi.testclient import TestClient
 import pytest
 from app.api import app
@@ -58,9 +57,7 @@ def test_predict_item(client): # pylint: disable=redefined-outer-name
         response = client.post("/model", files={"file": image})
     assert response.status_code == 200
     assert response.request.method == "POST"
-    data = response.json()["data"]
-    assert isinstance(data["predicted_class"], int)
-    assert isinstance(data["predicted_type"], str)
-    assert isinstance(data["confidence"], float)
-    assert data["predicted_class"] >= 0
-    assert 0 < data["confidence"] <= 1
+    prediction = response.json()["data"]["prediction"]
+    assert isinstance(prediction, list)
+    assert all(isinstance(value, float) for value in prediction)
+    assert sum(prediction) == pytest.approx(1)
