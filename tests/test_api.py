@@ -2,13 +2,11 @@
 Tests for the API.
 """
 
-from pathlib import Path
+from io import BytesIO
+from PIL import Image
 from fastapi.testclient import TestClient
 import pytest
 from app.api import app
-
-
-samples_folder_path = Path("data/samples")
 
 
 @pytest.fixture(scope="module")
@@ -49,15 +47,27 @@ def test_get_metrics(client): # pylint: disable=redefined-outer-name
     assert len(response.json()["data"]) > 0
 
 
-def test_predict_item(client): # pylint: disable=redefined-outer-name
+def test_predict_valid_item(client): # pylint: disable=redefined-outer-name
     """
-    Test that the API returns a valid response after a prediction request.
+    Test that the API returns a response after a valid prediction request.
     """
-    with open(samples_folder_path / "0.png", "rb") as image:
-        response = client.post("/model", files={"file": image})
+    stream = BytesIO()
+    Image.new("L", (28, 28)).save(stream, format="png")
+    response = client.post("/model", files={"file": stream.getvalue()})
     assert response.status_code == 200
     assert response.request.method == "POST"
     prediction = response.json()["data"]["prediction"]
     assert isinstance(prediction, list)
     assert all(isinstance(value, float) for value in prediction)
     assert sum(prediction) == pytest.approx(1)
+
+
+def test_predict_invalid_item(client): # pylint: disable=redefined-outer-name
+    """
+    Test that the API returns an error after an invalid prediction request.
+    """
+    stream = BytesIO()
+    Image.new("L", (30, 30)).save(stream, format="png")
+    response = client.post("/model", files={"file": stream.getvalue()})
+    assert response.status_code == 400
+    assert response.request.method == "POST"
