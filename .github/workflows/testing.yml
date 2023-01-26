@@ -69,8 +69,3 @@ jobs:
           tests/test_evaluate_model.py
           tests/test_behavioral.py
           tests/test_api.py
-      - name: Upload model
-        uses: actions/upload-artifact@v3
-        with:
-          name: models
-          path: models

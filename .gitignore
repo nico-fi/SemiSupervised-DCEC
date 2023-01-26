@@ -86,5 +86,4 @@ target/
 .mypy_cache/
 
 # Additional files
-data/processed/
 venv/

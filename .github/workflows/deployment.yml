@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
   workflow_dispatch:
 
 jobs:
@@ -12,14 +17,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Install DVC
+        run: |
+          pip install -U pip
+          pip install dvc
       - name: Download model
-        uses: actions/download-artifact@v3
-        with:
-          name: models
-          path: .
+        run: dvc pull models/model.tf models/score.json
       - name: Install Okteto CLI
         run: curl https://get.okteto.com -sSfL | sh
       - name: Use Okteto Cloud
         run: okteto context use https://cloud.okteto.com --token ${{ secrets.OKTETO_TOKEN }}
-      - name: Build and deploy
-        run: okteto deploy --build
+      - name: Build
+        run: okteto build
+      - name: Deploy
+        run: okteto deploy
