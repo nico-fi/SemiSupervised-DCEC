@@ -47,6 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
+      MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
