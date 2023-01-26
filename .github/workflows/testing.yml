@@ -26,6 +26,23 @@ jobs:
       - name: Lint code
         run: pylint --fail-under=9 src/ app/ tests/ web_app/
 
+  ge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+      - name: Install dependencies
+        run: |
+          pip install -U pip
+          pip install -r requirements.txt
+          pip install great-expectations
+      - name: Download Dataset
+        run: dvc pull
+      - name: Check Data
+        run: great_expectations checkpoint run fashion_mnist
+
   test:
     runs-on: ubuntu-latest
     env:
@@ -45,8 +62,7 @@ jobs:
       - name: Download Dataset
         run: dvc pull
       - name: Test Pipeline, Model and App
-        run: pytest --cov=src/  --cov=app/ --cov-fail-under=90 \
-          tests/test_prepare_dataset.py \
+        run: pytest --cov=src/  --cov=app/ --cov-fail-under=90 tests/test_prepare_dataset.py \
           tests/test_train_model.py \
           tests/test_evaluate_model.py \
           tests/test_behavioral.py \
