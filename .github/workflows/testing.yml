@@ -72,5 +72,5 @@ jobs:
       - name: Upload model
         uses: actions/upload-artifact@v3
         with:
-          name: model.tf
-          path: models/model.tf
+          name: models
+          path: models

@@ -70,3 +70,7 @@ stages:
     - path: src/models/evaluate_model.py
       md5: 1ee4e69c209055f10dc58c5dd82a5692
       size: 1263
+    outs:
+    - path: models/score.json
+      md5: eb1bc32756adbdd79c5d7995871621b3
+      size: 38
