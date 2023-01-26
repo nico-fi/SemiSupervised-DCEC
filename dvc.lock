@@ -15,6 +15,9 @@ stages:
         prepare.random_state: 42
         prepare.supervision: 0.05
     outs:
+    - path: data/ge/fashion_mnist.csv
+      md5: 60b53c77489e84f97d5f7d91e8033a54
+      size: 3376451
     - path: data/processed/x.npy
       md5: bef9c76d6ad4ac9c35cdafe145e37f6b
       size: 439040128

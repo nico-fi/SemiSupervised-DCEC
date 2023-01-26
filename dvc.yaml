@@ -12,6 +12,7 @@ stages:
     - data/processed/x_test.npy
     - data/processed/y_test.npy
     - data/processed/y_train.npy
+    - data/ge/fashion_mnist.csv
   train:
     cmd: PYTHONHASHSEED=0 python3 src/models/train_model.py
     deps:

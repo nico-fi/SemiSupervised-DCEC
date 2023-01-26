@@ -39,11 +39,11 @@ jobs:
           pip install -r requirements.txt
           pip install great-expectations
       - name: Download Dataset
-        run: dvc pull
+        run: dvc pull data/ge/fashion_mnist.csv
       - name: Check Data
         run: great_expectations checkpoint run fashion_mnist
 
-  test:
+  pytest:
     runs-on: ubuntu-latest
     env:
       MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
@@ -59,8 +59,6 @@ jobs:
           pip install -r requirements.txt
           pip install pytest
           pip install pytest-cov
-      - name: Download Dataset
-        run: dvc pull
       - name: Test Pipeline, Model and App
         run: pytest --cov=src/  --cov=app/ --cov-fail-under=90 tests/test_prepare_dataset.py \
           tests/test_train_model.py \
