@@ -10,7 +10,7 @@ import json
 import yaml
 import numpy as np
 from keras.models import load_model
-from fastapi import FastAPI, File
+from fastapi import FastAPI, File, HTTPException
 from PIL import Image, UnidentifiedImageError
 
 
@@ -83,14 +83,11 @@ def _predict(file: bytes = File(...)):
     try:
         image = Image.open(io.BytesIO(file))
         assert image.size == (28, 28)
-    except (UnidentifiedImageError, AssertionError):
-        return {
-            "message": HTTPStatus.BAD_REQUEST.phrase,
-            "status-code": HTTPStatus.BAD_REQUEST,
-            "timestamp": datetime.now().isoformat(),
-            "data": {"message": "The image could not be identified. "
-                                "Please, try again with a different image."}
-        }
+    except (UnidentifiedImageError, AssertionError) as exc:
+        raise HTTPException(status_code=HTTPStatus.BAD_REQUEST,
+            detail="The image could not be identified. "
+            "Please, try again with a different image.") from exc
+
     image = np.expand_dims(image, axis=0) / 255.0
     prediction = artifacts["model"].predict(image)[0]
     return {

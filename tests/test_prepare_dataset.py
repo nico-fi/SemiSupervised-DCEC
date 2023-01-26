@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 import yaml
 import pytest
-from ..data import prepare_dataset
+from src.data import prepare_dataset
 
 
 params_path = Path("params.yaml")

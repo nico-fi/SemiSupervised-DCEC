@@ -27,7 +27,7 @@ def classify_image(inp):
     """
     Classify an image using the API.
     """
-    url = "http://localhost:5000/model"
+    url = "http://api:5000/model"
     with open(inp, "rb") as image:
         response = requests.request("POST", url, files={"file": image}, timeout=5)
     prediction = response.json()["data"]["prediction"]
@@ -41,4 +41,4 @@ gr.Interface(
     inputs=gr.Image(image_mode="L", type="filepath", show_label=False),
     outputs=gr.Label(label="Prediction", num_top_classes=3),
     examples=glob.glob(str(samples_folder_path / "[0-9].png"))
-).launch()
+).launch(server_name="0.0.0.0", server_port=5001, show_error=True)

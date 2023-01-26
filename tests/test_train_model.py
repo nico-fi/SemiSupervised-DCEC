@@ -5,7 +5,7 @@ Tests for the model training script.
 from pathlib import Path
 import yaml
 from keras.models import load_model, Model
-from ..models import train_model
+from src.models import train_model
 
 
 params_path = Path("params.yaml")

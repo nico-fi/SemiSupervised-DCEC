@@ -4,7 +4,7 @@ Tests for the model evaluation script.
 
 from pathlib import Path
 import json
-from ..models import evaluate_model
+from src.models import evaluate_model
 
 
 model_folder_path = Path("models")
