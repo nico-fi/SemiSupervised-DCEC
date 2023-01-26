@@ -12,6 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Download model
+        uses: actions/download-artifact@v3
+        with:
+          name: model.tf
+          path: models/model.tf
       - name: Install Okteto CLI
         run: curl https://get.okteto.com -sSfL | sh
       - name: Use Okteto Cloud

@@ -38,9 +38,9 @@ jobs:
           pip install -U pip
           pip install -r requirements.txt
           pip install great-expectations
-      - name: Download Dataset
+      - name: Download dataset
         run: dvc pull data/ge/fashion_mnist.csv
-      - name: Check Data
+      - name: Check data
         run: great_expectations checkpoint run fashion_mnist
 
   pytest:
@@ -59,9 +59,9 @@ jobs:
           pip install -r requirements.txt
           pip install pytest
           pip install pytest-cov
-      - name: Download Dataset
+      - name: Download dataset
         run: dvc pull data/raw/fashion_mnist
-      - name: Test Pipeline, Model and App
+      - name: Test pipeline, model and app
         run: >
           pytest --cov=src/  --cov=app/ --cov-fail-under=90
           tests/test_prepare_dataset.py
@@ -69,3 +69,8 @@ jobs:
           tests/test_evaluate_model.py
           tests/test_behavioral.py
           tests/test_api.py
+      - name: Upload model
+        uses: actions/upload-artifact@v3
+        with:
+          name: model.tf
+          path: models/model.tf
