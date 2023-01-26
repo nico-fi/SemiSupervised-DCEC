@@ -59,7 +59,8 @@ jobs:
           pip install -r requirements.txt
           pip install pytest
           pip install pytest-cov
-
+      - name: Download Dataset
+        run: dvc pull data/raw/fashion_mnist
       - name: Test Pipeline, Model and App
         run: >
           pytest --cov=src/  --cov=app/ --cov-fail-under=90
