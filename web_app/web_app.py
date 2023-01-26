@@ -41,4 +41,4 @@ gr.Interface(
     inputs=gr.Image(image_mode="L", type="filepath", show_label=False),
     outputs=gr.Label(label="Prediction", num_top_classes=3),
     examples=glob.glob(str(samples_folder_path / "[0-9].png"))
-).launch(server_name="0.0.0.0", server_port=5001)
+).launch(server_name="0.0.0.0", server_port=5001, show_error=True)
