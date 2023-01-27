@@ -1,6 +1,7 @@
 ---
 [![Quality Assurance](https://github.com/nico-fi/SemiSupervised-DCEC/actions/workflows/quality_assurance.yml/badge.svg)](https://github.com/nico-fi/SemiSupervised-DCEC/actions/workflows/quality_assurance.yml)
 [![Deployment](https://github.com/nico-fi/SemiSupervised-DCEC/actions/workflows/deployment.yml/badge.svg)](https://github.com/nico-fi/SemiSupervised-DCEC/actions/workflows/deployment.yml)
+[![Better Uptime Badge](https://betteruptime.com/status-badges/v1/monitor/lu7r.svg)](https://betteruptime.com/?utm_source=status_badge)
 ---
 
 SemiSupervised DCEC
