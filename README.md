@@ -1,5 +1,7 @@
 ---
 [![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/PyCQA/pylint)
+[![Testing](https://github.com/nico-fi/SemiSupervised-DCEC/actions/workflows/testing.yml/badge.svg)](https://github.com/nico-fi/SemiSupervised-DCEC/actions/workflows/testing.yml)
+[![Deployment](https://github.com/nico-fi/SemiSupervised-DCEC/actions/workflows/deployment.yml/badge.svg)](https://github.com/nico-fi/SemiSupervised-DCEC/actions/workflows/deployment.yml)
 ---
 
 SemiSupervised DCEC
