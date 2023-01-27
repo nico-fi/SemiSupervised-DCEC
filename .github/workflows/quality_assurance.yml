@@ -1,4 +1,4 @@
-name: Testing
+name: Quality Assurance
 
 on:
   push:
@@ -43,7 +43,7 @@ jobs:
       - name: Check data
         run: great_expectations checkpoint run fashion_mnist
 
-  pytest:
+  test:
     runs-on: ubuntu-latest
     env:
       MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
