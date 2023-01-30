@@ -43,7 +43,7 @@ class ApiUser(HttpUser):
             self.client.post("/model", files={"file": image})
 
 
-    @task(4)
+    @task(2)
     def predict_invalid_item(self):
         """
         Make a prediction on an invalid item.
