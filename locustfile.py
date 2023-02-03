@@ -4,13 +4,12 @@ Locust file for load testing the API.
 
 import random
 import glob
-from pathlib import Path
 from io import BytesIO
 from PIL import Image
 from locust import HttpUser, task, between
 
 
-data_folder_path = Path("data/raw/fashion_mnist")
+sample_list = glob.glob("data/raw/fashion_mnist/*.png")
 
 
 class ApiUser(HttpUser):
@@ -38,7 +37,7 @@ class ApiUser(HttpUser):
         """
         Make a prediction on a valid item.
         """
-        sample = random.choice(glob.glob(str(data_folder_path / "*.png")))
+        sample = random.choice(sample_list)
         with open(sample, "rb") as image:
             self.client.post("/model", files={"file": image})
 
