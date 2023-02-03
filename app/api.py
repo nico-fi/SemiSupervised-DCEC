@@ -99,5 +99,5 @@ def _predict(file: bytes = File(...)):
         "timestamp": datetime.now().isoformat(),
         "data": {"prediction": prediction.tolist()}
     }
-    headers={"X-model-prediction": str(prediction.argmax())}
+    headers={"model-prediction": str(prediction.argmax())}
     return JSONResponse(content=content, headers=headers)

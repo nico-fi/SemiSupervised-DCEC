@@ -10,7 +10,7 @@ from PIL import Image
 from locust import HttpUser, task, between
 
 
-samples_folder_path = Path("data/samples")
+data_folder_path = Path("data/raw/fashion_mnist")
 
 
 class ApiUser(HttpUser):
@@ -38,7 +38,7 @@ class ApiUser(HttpUser):
         """
         Make a prediction on a valid item.
         """
-        sample = random.choice(glob.glob(str(samples_folder_path / "[0-9].png")))
+        sample = random.choice(glob.glob(str(data_folder_path / "*.png")))
         with open(sample, "rb") as image:
             self.client.post("/model", files={"file": image})
 

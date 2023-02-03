@@ -44,7 +44,7 @@ def class_prediction(
     def instrumentation(info: Info) -> None:
         if info.modified_handler == "/model":
             if info.response.status_code == 200:
-                predicted_class = info.response.headers.get("X-model-prediction")
+                predicted_class = info.response.headers.get("model-prediction")
                 METRIC.labels(predicted_class).inc()
 
     return instrumentation

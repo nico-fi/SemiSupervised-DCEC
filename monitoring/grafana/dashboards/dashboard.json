@@ -532,7 +532,7 @@
           "refId": "A"
         }
       ],
-      "title": "Predicted classes",
+      "title": "Predicted class",
       "transformations": [],
       "type": "bargauge"
     },
@@ -671,13 +671,13 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Grafana Dashboard",
   "uid": "sdcec",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
