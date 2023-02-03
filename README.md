@@ -7,55 +7,65 @@
 SemiSupervised DCEC
 ==============================
 
-Semi-supervised image clustering with convolutional autoencoders.
+Semi-supervised image clustering with convolutional autoencoder.
 
 Project Organization
 ------------
 
     ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train`
     ├── README.md          <- The top-level README for developers using this project.
+    ├── app                <- API built with FastAPI.
+    │   ├── api.py
+    │   ├── Dockerfile
+    │   ├── monitoring.py
+    │   └── requirements.txt
+    │
     ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
+    │   ├── ge             <- Metadata for Great Expectations.
     │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
+    │   ├── raw            <- The original, immutable data dump.
+    │   └── samples        <- Sample images.
     │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
+    ├── great_expectations <- Great Expectations directory.
     │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
+    ├── models             <- Trained and serialized models, model predictions, or model summaries.
     │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
+    ├── monitoring         <- Monitoring tools.
+    │   ├── grafana
+    │   ├── prometheus
+    │   └── alibi_detect.ipynb
     │
     ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
     │
     ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
     │   └── figures        <- Generated graphics and figures to be used in reporting
     │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
-    │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
     ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
+    │   ├── data           <- Scripts to download or generate data.
+    │   │   └── prepare_dataset.py
     │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
-    │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
+    │   └── models         <- Scripts to train models and make predictions.
+    │       ├── evaluate_model.py
+    │       └── train_model.py
     │
-    └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
+    ├── tests              <- Tests for ML pipeline, model behavior and API.
+    │   ├── test_api.py
+    │   ├── test_behavioral.py
+    │   ├── test_evaluate_model.py
+    │   ├── test_prepare_dataset.py
+    │   └── test_train_model.py
+    │
+    ├── web_app            <- Web interface for the API.
+    │   ├── Dockerfile
+    │   ├── requirements.txt
+    │   └── web_app.py
+    │
+    ├── docker-compose.yaml<- Compose file defining services of Docker application.
+    ├── dvc.lock           <- File recording the state of DVC pipeline.
+    ├── dvc.yaml           <- File recording DVC pipeline stages.
+    ├── locustfile.py      <- File for performing load tests.
+    ├── params.yaml        <- Parameters for building the model.
+    └── requirements.txt   <- The requirements file for reproducing the analysis environment.
 
 
 --------
