@@ -14,7 +14,7 @@ services:
       dockerfile: web_app/Dockerfile
     container_name: web-app
     ports:
-      - '5001:5001'
+      - '4000:4000'
     depends_on:
       - api
 
