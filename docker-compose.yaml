@@ -1,17 +1,39 @@
 services:
+
   api:
     build:
       context: .
       dockerfile: app/Dockerfile
     container_name: api
     ports:
-      - "5000:5000"
+      - '5000:5000'
+
   web-app:
     build:
       context: .
       dockerfile: web_app/Dockerfile
     container_name: web-app
     ports:
-      - "5001:5001"
+      - '4000:4000'
     depends_on:
       - api
+
+  prometheus:
+    build:
+      context: monitoring
+      dockerfile: prometheus/Dockerfile
+    container_name: prometheus
+    ports:
+      - '9090:9090'
+    depends_on:
+      - api
+
+  grafana:
+    build:
+      context: monitoring
+      dockerfile: grafana/Dockerfile
+    container_name: grafana
+    ports:
+      - '3000:3000'
+    depends_on:
+      - prometheus

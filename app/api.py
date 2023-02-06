@@ -11,7 +11,9 @@ import yaml
 import numpy as np
 from keras.models import load_model
 from fastapi import FastAPI, File, HTTPException
+from fastapi.responses import JSONResponse
 from PIL import Image, UnidentifiedImageError
+from .monitoring import instrumentator
 
 
 model_folder_path = Path("models")
@@ -21,6 +23,7 @@ app = FastAPI(
     description="This API lets you make predictions on the Fashion MNIST dataset using SDCEC.",
     version="1.0",
 )
+instrumentator.instrument(app).expose(app, include_in_schema=False, should_gzip=True)
 
 
 @app.on_event("startup")
@@ -90,9 +93,11 @@ def _predict(file: bytes = File(...)):
 
     image = np.expand_dims(image, axis=0) / 255.0
     prediction = artifacts["model"].predict(image)[0]
-    return {
+    content = {
         "message": HTTPStatus.OK.phrase,
         "status-code": HTTPStatus.OK,
         "timestamp": datetime.now().isoformat(),
         "data": {"prediction": prediction.tolist()}
     }
+    headers={"model-prediction": str(prediction.argmax())}
+    return JSONResponse(content=content, headers=headers)
