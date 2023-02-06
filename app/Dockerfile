@@ -6,7 +6,6 @@ COPY app/requirements.txt ./
 RUN pip install -U pip && pip install --no-cache-dir -r requirements.txt
 
 COPY app/api.py ./
-COPY app/monitoring.py ./
 COPY params.yaml ./
 COPY models/model.tf ./models/model.tf
 COPY models/score.json ./models/score.json

@@ -4,8 +4,10 @@ This module contains the FastAPI application and all of its endpoints.
 
 from datetime import datetime
 from http import HTTPStatus
-import io
+from typing import Callable
 from pathlib import Path
+import io
+import os
 import json
 import yaml
 import numpy as np
@@ -13,7 +15,9 @@ from keras.models import load_model
 from fastapi import FastAPI, File, HTTPException
 from fastapi.responses import JSONResponse
 from PIL import Image, UnidentifiedImageError
-from .monitoring import instrumentator
+from prometheus_client import Counter
+from prometheus_fastapi_instrumentator import Instrumentator, metrics
+from prometheus_fastapi_instrumentator.metrics import Info
 
 
 model_folder_path = Path("models")
@@ -23,7 +27,6 @@ app = FastAPI(
     description="This API lets you make predictions on the Fashion MNIST dataset using SDCEC.",
     version="1.0",
 )
-instrumentator.instrument(app).expose(app, include_in_schema=False, should_gzip=True)
 
 
 @app.on_event("startup")
@@ -101,3 +104,44 @@ def _predict(file: bytes = File(...)):
     }
     headers={"model-prediction": str(prediction.argmax())}
     return JSONResponse(content=content, headers=headers)
+
+
+def class_prediction(
+    metric_name: str = "class_prediction",
+    metric_doc: str = "Class predicted by the model",
+    metric_namespace: str = "",
+    metric_subsystem: str = "") -> Callable[[Info], None]:
+    """
+    This function creates a metric that tracks the class predicted by the model.
+    """
+    METRIC = Counter( # pylint: disable=invalid-name
+        metric_name,
+        metric_doc,
+        labelnames=["class"],
+        namespace=metric_namespace,
+        subsystem=metric_subsystem,
+    )
+    def instrumentation(info: Info) -> None:
+        if info.modified_handler == "/model":
+            if info.response.status_code == 200:
+                predicted_class = info.response.headers.get("model-prediction")
+                METRIC.labels(predicted_class).inc()
+    return instrumentation
+
+
+NAMESPACE = os.environ.get("METRICS_NAMESPACE", "api")
+SUBSYSTEM = os.environ.get("METRICS_SUBSYSTEM", "model")
+
+instrumentator = Instrumentator(
+    should_ignore_untemplated=True,
+    should_instrument_requests_inprogress=True,
+    inprogress_name="api_inprogress",
+    inprogress_labels=True,
+)
+
+instrumentator.add(metrics.request_size(metric_namespace=NAMESPACE, metric_subsystem=SUBSYSTEM))
+instrumentator.add(metrics.response_size(metric_namespace=NAMESPACE, metric_subsystem=SUBSYSTEM))
+instrumentator.add(metrics.latency(metric_namespace=NAMESPACE, metric_subsystem=SUBSYSTEM))
+instrumentator.add(metrics.requests(metric_namespace=NAMESPACE, metric_subsystem=SUBSYSTEM))
+instrumentator.add(class_prediction(metric_namespace=NAMESPACE, metric_subsystem=SUBSYSTEM))
+instrumentator.instrument(app).expose(app, include_in_schema=False, should_gzip=True)
