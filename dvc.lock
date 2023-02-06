@@ -46,14 +46,14 @@ stages:
       params.yaml:
         train.batch_size: 256
         train.epochs: 10
-        train.max_iter: 3000
+        train.max_iter: 4000
         train.random_state: 42
         train.tol: 0.001
     outs:
     - path: models/model.tf
-      md5: 0fafa773a5a52196bee3866694a9c90c.dir
-      size: 1823727
-      nfiles: 5
+      md5: 0f0ac43b42dc1c59ff1265492ec921ea.dir
+      size: 1822299
+      nfiles: 4
   evaluate:
     cmd: python3 src/models/evaluate_model.py
     deps:
@@ -64,13 +64,13 @@ stages:
       md5: 9f36132b1118750624d474fed1ee6f3b
       size: 532128
     - path: models/model.tf
-      md5: 0fafa773a5a52196bee3866694a9c90c.dir
-      size: 1823727
-      nfiles: 5
+      md5: 0f0ac43b42dc1c59ff1265492ec921ea.dir
+      size: 1822299
+      nfiles: 4
     - path: src/models/evaluate_model.py
       md5: 1ee4e69c209055f10dc58c5dd82a5692
       size: 1263
     outs:
     - path: models/score.json
-      md5: eb1bc32756adbdd79c5d7995871621b3
+      md5: 082c7200885d43d40a95f6feec62edd6
       size: 38

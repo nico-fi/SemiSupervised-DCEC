@@ -4,6 +4,6 @@ prepare:
 train:
   batch_size: 256
   epochs: 10
-  max_iter: 3000
+  max_iter: 4000
   tol: 0.001
   random_state: 42
