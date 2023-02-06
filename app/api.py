@@ -13,7 +13,7 @@ from keras.models import load_model
 from fastapi import FastAPI, File, HTTPException
 from fastapi.responses import JSONResponse
 from PIL import Image, UnidentifiedImageError
-from monitoring import instrumentator
+from .monitoring import instrumentator
 
 
 model_folder_path = Path("models")
